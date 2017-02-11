@@ -15,12 +15,12 @@ var hub = {
     });
   },
   kickoff: ()=>{
-
-    if(config.count > config.end -100){
+    if(config.count > config.end){
       console.log('complete hub process');
       process.exit(1);
     }else{
       const execFile = require('child_process').execFile;
+      // if(config.count === config.end - 101) config.iteration++;
       const child = execFile('node', ['worker.js' , config.count, config.count + config.iteration], (error, stdout, stderr) => {
         if (error || stderr) {
           var finalError = error || stderr;
@@ -28,16 +28,13 @@ var hub = {
             config.count += 100;
             hub.kickoff();
           })
-        }
-
+        };
         if (stdout){
           hub.writer('write_log', `\n*****\n`+  stdout +`\n*****\n`, (writeErr, writeRes)=>{
             config.count += 100;
             hub.kickoff();
           })
         };
-
-
       });
     }
   }
